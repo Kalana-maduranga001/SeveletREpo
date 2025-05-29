@@ -135,7 +135,7 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setCorsHeaders(resp);  // <-- ADD THIS
+        setCorsHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
