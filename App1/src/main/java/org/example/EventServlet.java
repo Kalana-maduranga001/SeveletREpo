@@ -22,7 +22,7 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setCorsHeaders(resp);  // <-- ADD THIS
+        setCorsHeaders(resp);
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -51,7 +51,7 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setCorsHeaders(resp);  // <-- ADD THIS
+      setCorsHeaders(resp);
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> event = mapper.readValue(req.getInputStream(), Map.class);
@@ -81,7 +81,7 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setCorsHeaders(resp);  // <-- ADD THIS
+        setCorsHeaders(resp);
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> event = mapper.readValue(req.getInputStream(), Map.class);
@@ -111,7 +111,7 @@ public class EventServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setCorsHeaders(resp);  // Ensure CORS headers are here
+       setCorsHeaders(resp);
 
         String id = req.getParameter("id");  // Get ID from query string
 
