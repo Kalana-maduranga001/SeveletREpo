@@ -2,111 +2,604 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Event Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Manager Pro</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        table, th, td { border: 1px solid #ccc; }
-        th, td { padding: 8px; text-align: left; }
-        input[type="text"], input[type="date"] {
-            padding: 5px;
-            margin: 5px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100px) translateY(-100px); }
+            50% { transform: translateX(100px) translateY(100px); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            color: #6b7280;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: linear-gradient(to right, #fafafa, #fafafa);
+            padding: 0 5px;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 0.875rem;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 120px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-outline:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateY(-2px);
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            color: #374151;
+            font-weight: 600;
+            padding: 20px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+            cursor: pointer;
+            transform: scale(1.005);
+        }
+
+        tr:hover td {
+            color: #4f46e5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+                margin: -20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .form-section, .table-section {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            .btn {
+                flex: 1;
+                min-width: auto;
+            }
         }
     </style>
 </head>
 <body>
+<div class="container">
+    <div class="header">
+        <h1>Event Manager Pro</h1>
+        <p>Manage your events with style and efficiency</p>
+    </div>
 
-<h2>Event Manager</h2>
+    <div class="main-content">
+        <div class="form-section">
+            <h3 class="section-title">Event Management</h3>
+            <div class="form-grid">
+                <div class="input-group">
+                    <input type="text" id="id" placeholder=" ">
+                    <label>Event ID (for update/delete)</label>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="name" placeholder=" ">
+                    <label>Event Name</label>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="description" placeholder=" ">
+                    <label>Description</label>
+                </div>
+                <div class="input-group">
+                    <input type="date" id="date" placeholder=" ">
+                    <label>Event Date</label>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="place" placeholder=" ">
+                    <label>Location</label>
+                </div>
+            </div>
 
-<h3>Save / Update Event</h3>
-<input type="text" id="id" placeholder="Event ID (for update/delete)">
-<input type="text" id="name" placeholder="Event Name">
-<input type="text" id="description" placeholder="Description">
-<input type="date" id="date">
-<input type="text" id="place" placeholder="Place">
-<button id="createEvent">Save</button>
-<button id="updateEvent">Update</button>
-<button id="deleteEvent">Delete</button>
-<button id="resetForm">Reset</button>
+            <div class="button-group">
+                <button id="createEvent" class="btn btn-primary">
+                    <span>Save Event</span>
+                </button>
+                <button id="updateEvent" class="btn btn-secondary">
+                    <span>Update Event</span>
+                </button>
+                <button id="deleteEvent" class="btn btn-danger">
+                    <span>Delete Event</span>
+                </button>
+                <button id="resetForm" class="btn btn-outline">
+                    <span>Reset Form</span>
+                </button>
+            </div>
+        </div>
 
+        <div class="table-section">
+            <div class="table-header">
+                <h3 class="section-title">All Events</h3>
+                <button id="getAllEvents" class="btn btn-primary">
+                    <span>Refresh Events</span>
+                </button>
+            </div>
 
-<h3>All Events</h3>
-<button id="getAllEvents">Get All</button>
-<table id="eventTable">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Date</th>
-        <th>Place</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+            <div class="table-container">
+                <table id="eventTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Event Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="m9 12 2 2 4-4"></path>
+                            </svg>
+                            <div>No events found. Click "Refresh Events" to load data.</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<script src="jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     const apiUrl = 'http://localhost:8080/App1_war_exploded/event';
+
+    // Enhanced notification system
+    function showNotification(message, type = 'success') {
+        const notification = $(`
+                <div class="notification ${type}">
+                    ${message}
+                </div>
+            `);
+
+        $('body').append(notification);
+        setTimeout(() => notification.addClass('show'), 100);
+
+        setTimeout(() => {
+            notification.removeClass('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Enhanced button loading state
+    function setButtonLoading(button, loading = true) {
+        const btn = $(button);
+        const span = btn.find('span');
+
+        if (loading) {
+            btn.prop('disabled', true);
+            span.html('<div class="loading"></div>');
+        } else {
+            btn.prop('disabled', false);
+            // Restore original text based on button ID
+            const originalTexts = {
+                'createEvent': 'Save Event',
+                'updateEvent': 'Update Event',
+                'deleteEvent': 'Delete Event',
+                'resetForm': 'Reset Form',
+                'getAllEvents': 'Refresh Events'
+            };
+            span.text(originalTexts[btn.attr('id')] || 'Button');
+        }
+    }
 
     $(document).ready(function () {
         $('#getAllEvents').click();
     });
 
-
-    // function refreshTable(data) {
-    //     const tbody = $('#eventTable tbody');
-    //     tbody.empty();
-    //     data.forEach(event => {
-    //         tbody.append(`
-    //             <tr>
-    //                 <td>${event.id}</td>
-    //                 <td>${event.name}</td>
-    //                 <td>${event.description}</td>
-    //                 <td>${event.date}</td>
-    //                 <td>${event.place}</td>
-    //             </tr>
-    //         `);
-    //     });
-    // }
-
     function refreshTable(data) {
         const tbody = $('#eventTable tbody');
         tbody.empty();
-        data.forEach(event => {
-            const row = $(`
-            <tr data-id="${event.id}">
-                <td>${event.id}</td>
-                <td>${event.name}</td>
-                <td>${event.description}</td>
-                <td>${event.date}</td>
-                <td>${event.place}</td>
-            </tr>
-        `);
 
-            // Row click event: populate input fields
+        if (!data || data.length === 0) {
+            tbody.append(`
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 6v6l4 2"></path>
+                            </svg>
+                            <div>No events available. Create your first event!</div>
+                        </td>
+                    </tr>
+                `);
+            return;
+        }
+
+        data.forEach(event => {
+            const eventDate = new Date(event.date);
+            const today = new Date();
+            const isUpcoming = eventDate >= today;
+
+            const row = $(`
+                    <tr data-id="${event.id}">
+                        <td>${event.id}</td>
+                        <td>${event.name}</td>
+                        <td>${event.description}</td>
+                        <td>${event.date}</td>
+                        <td>${event.place}</td>
+                        <td>
+                            <span class="status-badge ${isUpcoming ? 'status-active' : ''}">
+                                ${isUpcoming ? 'Upcoming' : 'Past'}
+                            </span>
+                        </td>
+                    </tr>
+                `);
+
             row.click(function () {
+                // Visual feedback for selection
+                $('tr').removeClass('selected');
+                $(this).addClass('selected');
+
+                // Populate form fields
                 $('#id').val(event.id);
                 $('#name').val(event.name);
                 $('#description').val(event.description);
                 $('#date').val(event.date);
                 $('#place').val(event.place);
+
+                // Trigger label animation
+                $('#id, #name, #description, #date, #place').trigger('input');
+
+                showNotification('Event selected for editing', 'success');
             });
 
             tbody.append(row);
         });
     }
 
-
     $('#getAllEvents').click(function () {
+        setButtonLoading(this, true);
+
         $.ajax({
             url: apiUrl,
             method: 'GET',
             success: function (response) {
                 refreshTable(response);
+                showNotification('Events loaded successfully');
             },
             error: function () {
-                alert("Error fetching data");
+                showNotification('Error fetching events', 'error');
+            },
+            complete: function() {
+                setButtonLoading('#getAllEvents', false);
             }
         });
     });
@@ -119,44 +612,32 @@
             date: $('#date').val(),
             place: $('#place').val()
         };
+
+        if (!event.name || !event.date) {
+            showNotification('Please fill in at least event name and date', 'error');
+            return;
+        }
+
+        setButtonLoading(this, true);
+
         $.ajax({
             url: apiUrl,
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(event),
             success: function (response) {
-                alert('Event created');
+                showNotification('Event created successfully');
                 $('#getAllEvents').click();
+                $('#resetForm').click();
             },
             error: function () {
-                alert("Error creating event");
+                showNotification('Error creating event', 'error');
+            },
+            complete: function() {
+                setButtonLoading('#createEvent', false);
             }
         });
     });
-
-    // $('#updateEvent').click(function () {
-    //     const event = {
-    //         id: $('#id').val(),
-    //         name: $('#name').val(),
-    //         description: $('#description').val(),
-    //         date: $('#date').val(),
-    //         place: $('#place').val()
-    //     };
-    //     $.ajax({
-    //         url: apiUrl + `?id=${event.id}`,
-    //         method: 'PUT',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify(event),
-    //         success: function (response) {
-    //             alert('Event updated');
-    //             $('#getAllEvents').click();
-    //         },
-    //         error: function () {
-    //             alert("Error updating event");
-    //         }
-    //     });
-    // });
-
 
     $('#updateEvent').click(function () {
         const event = {
@@ -166,69 +647,72 @@
             date: $('#date').val(),
             place: $('#place').val()
         };
+
+        if (!event.id) {
+            showNotification('Please select an event to update', 'error');
+            return;
+        }
+
+        setButtonLoading(this, true);
+
         $.ajax({
             url: apiUrl + `?id=${event.id}`,
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(event),
             success: function (response) {
-                alert('Event updated');
+                showNotification('Event updated successfully');
                 $('#getAllEvents').click();
             },
             error: function () {
-                alert("Error updating event");
+                showNotification('Error updating event', 'error');
+            },
+            complete: function() {
+                setButtonLoading('#updateEvent', false);
             }
         });
     });
 
-
-    // $('#deleteEvent').click(function () {
-    //     const id = $('#id').val();
-    //     if (!id) {
-    //         alert("Please enter Event ID to delete.");
-    //         return;
-    //     }
-    //     $.ajax({
-    //         url: `http://localhost:8080/App1_war_exploded/event?id=${id}`,  // dynamically use input ID
-    //         type: "DELETE",
-    //         success: function(response) {
-    //             alert("Event deleted");
-    //             $('#getAllEvents').click();  // Refresh the table
-    //         },
-    //         error: function(xhr, status, error) {
-    //             alert("Error deleting event: " + error);
-    //         }
-    //     });
-    // });
-
     $('#deleteEvent').click(function () {
         const id = $('#id').val();
         if (!id) {
-            alert("Please enter Event ID to delete.");
+            showNotification('Please select an event to delete', 'error');
             return;
         }
+
+        if (!confirm('Are you sure you want to delete this event?')) {
+            return;
+        }
+
+        setButtonLoading(this, true);
+
         $.ajax({
             url: apiUrl + `?id=${id}`,
             type: "DELETE",
             success: function(response) {
-                alert("Event deleted");
+                showNotification('Event deleted successfully');
                 $('#getAllEvents').click();
-                // Clear form
-                $('#id, #name, #description, #date, #place').val('');
+                $('#resetForm').click();
             },
             error: function(xhr, status, error) {
-                alert("Error deleting event");
-                console.error("Error:", error);
+                showNotification('Error deleting event', 'error');
+            },
+            complete: function() {
+                setButtonLoading('#deleteEvent', false);
             }
         });
     });
 
     $('#resetForm').click(function () {
         $('#id, #name, #description, #date, #place').val('');
+        $('tr').removeClass('selected');
+        showNotification('Form cleared');
     });
 
-
+    // Enhanced input interactions
+    $('input').on('input', function() {
+        $(this).toggleClass('has-value', $(this).val() !== '');
+    });
 </script>
-
 </body>
 </html>
