@@ -18,15 +18,17 @@
 
 <h2>Event Manager</h2>
 
-<h3>Create / Update Event</h3>
+<h3>Save / Update Event</h3>
 <input type="text" id="id" placeholder="Event ID (for update/delete)">
 <input type="text" id="name" placeholder="Event Name">
 <input type="text" id="description" placeholder="Description">
 <input type="date" id="date">
 <input type="text" id="place" placeholder="Place">
-<button id="createEvent">Create</button>
+<button id="createEvent">Save</button>
 <button id="updateEvent">Update</button>
 <button id="deleteEvent">Delete</button>
+<button id="resetForm">Reset</button>
+
 
 <h3>All Events</h3>
 <button id="getAllEvents">Get All</button>
@@ -47,21 +49,54 @@
 <script>
     const apiUrl = 'http://localhost:8080/App1_war_exploded/event';
 
+    $(document).ready(function () {
+        $('#getAllEvents').click();
+    });
+
+
+    // function refreshTable(data) {
+    //     const tbody = $('#eventTable tbody');
+    //     tbody.empty();
+    //     data.forEach(event => {
+    //         tbody.append(`
+    //             <tr>
+    //                 <td>${event.id}</td>
+    //                 <td>${event.name}</td>
+    //                 <td>${event.description}</td>
+    //                 <td>${event.date}</td>
+    //                 <td>${event.place}</td>
+    //             </tr>
+    //         `);
+    //     });
+    // }
+
     function refreshTable(data) {
         const tbody = $('#eventTable tbody');
         tbody.empty();
         data.forEach(event => {
-            tbody.append(`
-                <tr>
-                    <td>${event.id}</td>
-                    <td>${event.name}</td>
-                    <td>${event.description}</td>
-                    <td>${event.date}</td>
-                    <td>${event.place}</td>
-                </tr>
-            `);
+            const row = $(`
+            <tr data-id="${event.id}">
+                <td>${event.id}</td>
+                <td>${event.name}</td>
+                <td>${event.description}</td>
+                <td>${event.date}</td>
+                <td>${event.place}</td>
+            </tr>
+        `);
+
+            // Row click event: populate input fields
+            row.click(function () {
+                $('#id').val(event.id);
+                $('#name').val(event.name);
+                $('#description').val(event.description);
+                $('#date').val(event.date);
+                $('#place').val(event.place);
+            });
+
+            tbody.append(row);
         });
     }
+
 
     $('#getAllEvents').click(function () {
         $.ajax({
@@ -99,6 +134,30 @@
         });
     });
 
+    // $('#updateEvent').click(function () {
+    //     const event = {
+    //         id: $('#id').val(),
+    //         name: $('#name').val(),
+    //         description: $('#description').val(),
+    //         date: $('#date').val(),
+    //         place: $('#place').val()
+    //     };
+    //     $.ajax({
+    //         url: apiUrl + `?id=${event.id}`,
+    //         method: 'PUT',
+    //         contentType: 'application/json',
+    //         data: JSON.stringify(event),
+    //         success: function (response) {
+    //             alert('Event updated');
+    //             $('#getAllEvents').click();
+    //         },
+    //         error: function () {
+    //             alert("Error updating event");
+    //         }
+    //     });
+    // });
+
+
     $('#updateEvent').click(function () {
         const event = {
             id: $('#id').val(),
@@ -122,6 +181,26 @@
         });
     });
 
+
+    // $('#deleteEvent').click(function () {
+    //     const id = $('#id').val();
+    //     if (!id) {
+    //         alert("Please enter Event ID to delete.");
+    //         return;
+    //     }
+    //     $.ajax({
+    //         url: `http://localhost:8080/App1_war_exploded/event?id=${id}`,  // dynamically use input ID
+    //         type: "DELETE",
+    //         success: function(response) {
+    //             alert("Event deleted");
+    //             $('#getAllEvents').click();  // Refresh the table
+    //         },
+    //         error: function(xhr, status, error) {
+    //             alert("Error deleting event: " + error);
+    //         }
+    //     });
+    // });
+
     $('#deleteEvent').click(function () {
         const id = $('#id').val();
         if (!id) {
@@ -129,17 +208,26 @@
             return;
         }
         $.ajax({
-            url: "http://localhost:8080/App1_war_exploded/event?id=11",
+            url: apiUrl + `?id=${id}`,
             type: "DELETE",
             success: function(response) {
-                console.log("Deleted:", response);
+                alert("Event deleted");
+                $('#getAllEvents').click();
+                // Clear form
+                $('#id, #name, #description, #date, #place').val('');
             },
             error: function(xhr, status, error) {
+                alert("Error deleting event");
                 console.error("Error:", error);
             }
         });
-
     });
+
+    $('#resetForm').click(function () {
+        $('#id, #name, #description, #date, #place').val('');
+    });
+
+
 </script>
 
 </body>
